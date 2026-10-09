@@ -27,7 +27,7 @@ android {
         }
     }
 
-    buildFeatures {
+        buildFeatures {
         compose = true
         prefab = true
     }
