@@ -28,7 +28,6 @@ android {
 
     buildFeatures {
         compose = true
-        prefab = true
     }
 
     composeOptions {
@@ -81,7 +80,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     // Oboe - low latency audio
-    implementation("com.google.oboe:oboe:1.8.1")
+    implementation("com.google.oboe:oboe:1.9.1")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
