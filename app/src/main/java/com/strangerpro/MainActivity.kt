@@ -55,12 +55,11 @@ class MainActivity : ComponentActivity() {
         if(isPen) {
             val pressure = event.pressure
             val tiltX = event.getAxisValue(MotionEvent.AXIS_TILT_X) * 90f
-            val tiltY = event.getAxisValue(MotionEvent.AXIS_TILT_Y)
             val isEraser = (event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) != 0
             setParam(100, pressure)
             setParam(101, tiltX)
             setParam(102, if(isEraser) 1f else 0f)
-            webView.evaluateJavascript("window.onSPen && window.onSPen(${pressure}, ${tiltX}, ${tiltY}, ${isEraser});", null)
+            webView.evaluateJavascript("window.onSPen && window.onSPen(${pressure}, ${tiltX}, ${isEraser});", null)
         }
         return super.onTouchEvent(event)
     }
