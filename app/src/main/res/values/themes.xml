@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.StrangerPro" parent="android:Theme.Material.Light.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">#12161F</item>
+        <item name="android:statusBarColor">#12161F</item>
+    </style>
+</resources>
