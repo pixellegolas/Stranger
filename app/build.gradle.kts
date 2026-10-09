@@ -8,7 +8,6 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        ndkVersion = "27.0.12077973"
         applicationId = "com.strangerpro"
         minSdk = 24
         targetSdk = 34
