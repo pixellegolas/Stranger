@@ -1,7 +1,6 @@
 package com.strangerpro
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
@@ -18,7 +17,6 @@ class MainActivity : ComponentActivity() {
     external fun setParam(paramId: Int, value: Float)
     external fun setBassMode(mode: Int)
     external fun loadSampleFd(fd: Int): Boolean
-
     companion object { init { try { System.loadLibrary("stranger-engine") } catch(e:Exception){} } }
 
     private val samplePicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
@@ -46,23 +44,21 @@ class MainActivity : ComponentActivity() {
                 @android.webkit.JavascriptInterface fun setParamJS(id:Int, v:Float){ setParam(id, v) }
                 @android.webkit.JavascriptInterface fun setBassModeJS(m:Int){ setBassMode(m) }
                 @android.webkit.JavascriptInterface fun pickSample(){ samplePicker.launch(arrayOf("audio/*")) }
-                @android.webkit.JavascriptInterface fun getSPenInfo(): String { return "ready" }
             }, "Android")
             loadUrl("file:///android_asset/stranger-pro-final.html")
         }
         setContentView(webView)
     }
 
-    // S-Pen handling - Tab S8 Ultra 4096 pressure levels
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val isPen = event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
         if(isPen) {
-            val pressure = event.pressure // 0..1
+            val pressure = event.pressure
             val tiltX = event.getAxisValue(MotionEvent.AXIS_TILT_X) * 90f
             val tiltY = event.getAxisValue(MotionEvent.AXIS_TILT_Y)
             val isEraser = (event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) != 0
-            setParam(100, pressure) // fine tune + velocity
-            setParam(101, tiltX) // filter
+            setParam(100, pressure)
+            setParam(101, tiltX)
             setParam(102, if(isEraser) 1f else 0f)
             webView.evaluateJavascript("window.onSPen && window.onSPen(${pressure}, ${tiltX}, ${tiltY}, ${isEraser});", null)
         }
