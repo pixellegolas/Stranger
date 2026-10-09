@@ -1,55 +1,33 @@
-name: Build STRANGER PRO APK
-on:
-  push:
-    branches: [ main, master ]
-  workflow_dispatch:
+name: Build APK
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
-
-      - name: Set up JDK 17
+      - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'temurin'
-
+          java-version: '17'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: Install Android SDK cmdline-tools + NDK
-        run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          cd $ANDROID_HOME/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip -O cmd.zip
-          unzip -q cmd.zip
-          mv cmdline-tools latest
-          rm cmd.zip
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;25.1.8937393"
-
-      - name: Init submodules - REAL engines (Dexed, Surge, OB-Xd, Oboe)
-        run: |
-          rm -rf app/src/main/cpp/oboe app/src/main/cpp/dexed app/src/main/cpp/surge app/src/main/cpp/obxd
-          git clone --depth 1 https://github.com/google/oboe.git app/src/main/cpp/oboe
-          git clone --depth 1 https://github.com/asb2m10/dexed.git app/src/main/cpp/dexed
-          git clone --depth 1 https://github.com/surge-synthesizer/surge.git app/src/main/cpp/surge
-          git clone --depth 1 https://github.com/2DaT/Obxd.git app/src/main/cpp/obxd
-          ls -R app/src/main/cpp | head -n 100
-
-      - name: Grant gradlew
-        run: chmod +x gradlew
-
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew || true
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace --info
-
+        run: |
+          if [ -f "./gradlew" ] && [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            ./gradlew assembleDebug --no-daemon
+          else
+            gradle assembleDebug --no-daemon
+          fi
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: STRANGER-PRO-APK
-          path: app/build/outputs/apk/debug/*.apk
+          name: stranger-pro-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
