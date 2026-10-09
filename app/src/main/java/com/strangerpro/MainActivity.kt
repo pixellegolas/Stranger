@@ -85,7 +85,6 @@ class MainActivity : ComponentActivity() {
                             .padding(18.dp)
                     ) {
                         Column {
-                            // Waveform timeline
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -121,7 +120,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 }
-                                // Red playhead
                                 Box(
                                     Modifier
                                         .fillMaxHeight()
@@ -148,7 +146,6 @@ class MainActivity : ComponentActivity() {
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Info card
                                 Box(
                                     Modifier
                                         .width(272.dp)
@@ -247,10 +244,11 @@ class MainActivity : ComponentActivity() {
                                                     Text("ALGO $selectedAlgo FB ${(feedback*100).toInt()}%", fontSize=8.sp, fontFamily=FontFamily.Monospace, color=Color.DarkGray)
                                                     Spacer(Modifier.height(6.dp))
                                                     Row(horizontalArrangement=Arrangement.spacedBy(3.dp)) {
-                                                        listOf("C","M","M","C","M","C").forEachIndexed { i, _ ->
+                                                        for (i in 0..5) {
                                                             Column(horizontalAlignment=Alignment.CenterHorizontally) {
+                                                                val h = 8 + i*2
                                                                 Box(Modifier.width(14.dp).height(22.dp).clip(RoundedCornerShape(2.dp)).background(Color.Black.copy(0.08f))) {
-                                                                    Box(Modifier.fillMaxWidth().height((0.3f+0.7f*Random.nextFloat())*22.dp).background(Color(0xFFFF5A1F)).align(Alignment.BottomCenter))
+                                                                    Box(Modifier.fillMaxWidth().height(h.dp).background(Color(0xFFFF5A1F)).align(Alignment.BottomCenter))
                                                                 }
                                                                 Text("OP${i+1}", fontSize=6.sp, fontFamily=FontFamily.Monospace)
                                                             }
@@ -258,7 +256,7 @@ class MainActivity : ComponentActivity() {
                                                     }
                                                 } else {
                                                     Text("SURGE • SUB", fontSize=10.sp, color=Color.Black, fontWeight=FontWeight.Bold, fontFamily=FontFamily.Monospace)
-                                                    Spacer(Modifier.height=6.dp)
+                                                    Spacer(Modifier.height(6.dp))
                                                     Text("CUT ${(cutoff*100).toInt()}% RES ${(resonance*100).toInt()}%", fontSize=8.sp, fontFamily=FontFamily.Monospace)
                                                 }
                                             }
@@ -266,7 +264,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
 
-                                // Jog wheel
                                 Box(Modifier.size(142.dp), contentAlignment=Alignment.Center) {
                                     Canvas(Modifier.fillMaxSize()) {
                                         drawCircle(Color(0xFFE8E6E1), radius=size.minDimension/2)
@@ -381,7 +378,8 @@ class MainActivity : ComponentActivity() {
                                     horizontalArrangement=Arrangement.spacedBy(2.dp)
                                 ) {
                                     val notes = listOf(60,62,64,65,67,69,71,72)
-                                    notes.forEach { midi ->
+                                    val noteNames = listOf("C","D","E","F","G","A","B","C")
+                                    notes.forEachIndexed { index, midi ->
                                         val active = midi in activeNotes
                                         Box(
                                             Modifier
@@ -390,25 +388,18 @@ class MainActivity : ComponentActivity() {
                                                 .clip(RoundedCornerShape(6.dp))
                                                 .background(if(active) Color(0xFFFF5A1F) else Color.White)
                                                 .border(1.dp, Color.Black.copy(0.12f), RoundedCornerShape(6.dp))
-                                                .pointerInput(midi) {
-                                                    detectDragGestures(
-                                                        onDragStart={
-                                                            activeNotes=activeNotes+midi
-                                                            audioEngine.noteOn(midi,100)
-                                                        },
-                                                        onDragEnd={
-                                                            activeNotes=activeNotes-midi
-                                                            audioEngine.noteOff(midi)
-                                                        }
-                                                    )
-                                                }
                                                 .clickable {
-                                                    if(midi in activeNotes){ activeNotes=activeNotes-midi; audioEngine.noteOff(midi)}
-                                                    else{ activeNotes=activeNotes+midi; audioEngine.noteOn(midi,100)}
+                                                    if(midi in activeNotes){
+                                                        activeNotes=activeNotes-midi
+                                                        audioEngine.noteOff(midi)
+                                                    } else {
+                                                        activeNotes=activeNotes+midi
+                                                        audioEngine.noteOn(midi,100)
+                                                    }
                                                 },
                                             contentAlignment=Alignment.BottomCenter
                                         ) {
-                                            Text(listOf("C","D","E","F","G","A","B","C")[notes.indexOf(midi)], fontSize=7.sp, fontFamily=FontFamily.Monospace, color=if(active) Color.White else Color.Gray, modifier=Modifier.padding(bottom=3.dp))
+                                            Text(noteNames[index], fontSize=7.sp, fontFamily=FontFamily.Monospace, color=if(active) Color.White else Color.Gray, modifier=Modifier.padding(bottom=3.dp))
                                         }
                                     }
                                 }
