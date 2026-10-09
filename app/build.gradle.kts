@@ -8,7 +8,6 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        ndkVersion = "27.0.12077973"
         applicationId = "com.strangerpro"
         minSdk = 24
         targetSdk = 34
@@ -29,7 +28,7 @@ android {
 
     buildFeatures {
         compose = true
-        prefab = true // <-- ADD THIS
+        prefab = true
     }
 
     composeOptions {
@@ -82,7 +81,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     // Oboe - low latency audio
-    implementation("com.google.oboe:oboe:1.9.1")
+    implementation("com.google.oboe:oboe:1.8.1")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
