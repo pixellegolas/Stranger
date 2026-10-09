@@ -5,39 +5,43 @@ plugins {
 
 android {
     namespace = "com.strangerpro"
-    compileSdk = 34
+    compileSdk = 35
+
     defaultConfig {
-        applicationId = "com.strangerpro.final"
-        minSdk = 28
-        targetSdk = 34
-        versionCode = 6
-        versionName = "6.0-agp852-fix"
-        ndk {
-            abiFilters += listOf("arm64-v8a")
-        }
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++17 -O2 -frtti -fexceptions"
-                arguments += listOf("-DANDROID_STL=c++_shared")
-            }
-        }
+        applicationId = "com.strangerpro"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
     }
-    buildTypes {
-        release { isMinifyEnabled = false }
-        debug { isMinifyEnabled = false }
+
+    buildFeatures {
+        compose = true
     }
-    externalNativeBuild {
-        cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
-    // FIX: Only core-ktx, no webkit to avoid ConstraintHandler alignWith crash in AGP 8.2.2
-    // androidx.webkit caused Cannot mutate dependencies after configuration was resolved
-    implementation("androidx.core:core-ktx:1.10.1")
+    // THIS IS THE FIX - this was missing
+    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("androidx.activity:activity-compose:1.10.1")
+    
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
+
+    // If you use Compose in MainActivity
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
 }
