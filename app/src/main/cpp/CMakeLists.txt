@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(strangerpro)
 
-# Oboe from Maven prefab - AGP provides this via prefab
+# Oboe from Maven prefab
 find_package(oboe REQUIRED CONFIG)
 
 add_library(strangerpro SHARED
@@ -19,14 +19,13 @@ target_link_libraries(strangerpro
     oboe::oboe
     android
     log
-    OpenSLES
 )
 
 target_compile_options(strangerpro PRIVATE
     -O3
     -ffast-math
     -Wall
-    -Wno-unused-variable
 )
 
+# C++17
 set_property(TARGET strangerpro PROPERTY CXX_STANDARD 17)
