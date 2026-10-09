@@ -19,12 +19,12 @@ jobs:
           gradle-version: 8.9
 
       - name: Make gradlew executable
-        run: chmod +x./gradlew || true
+        run: chmod +x ./gradlew || true
 
       - name: Build Debug APK
         run: |
           if [ -f "./gradlew" ] && [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-           ./gradlew assembleDebug --no-daemon --stacktrace
+            ./gradlew assembleDebug --no-daemon --stacktrace
           else
             gradle assembleDebug --no-daemon --stacktrace
           fi
